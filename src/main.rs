@@ -18,10 +18,8 @@ fn main() -> Status {
     uefi::println!("[nBoot INFO]: Bootloader started...");
 
     let (kernel_data, header) = elf::load_kernel_elf(KERNEL_PATH);
-    kernel::load_segments(&kernel_data, &header);
-    uefi::println!("[nBoot INFO]: Kernel segments are loaded");
-
-    kernel::jump_to_kernel(header.e_entry);
+    let entry = kernel::load_segments(&kernel_data, &header);
+    kernel::jump_to_kernel(entry);
 }
 
 #[panic_handler]

@@ -10,8 +10,8 @@ const EI_CLASS_64: u8 = 2;
 const EI_DATA_LSB: u8 = 1;
 const EM_X86_64: u16 = 62;
 const ET_EXEC: u16 = 2;
-const ET_DYN: u16 = 3;
 
+pub const ET_DYN: u16 = 3;
 pub const PT_LOAD: u32 = 1;
 
 const EHDR_SIZE: usize = 64;
@@ -54,6 +54,7 @@ impl fmt::Display for ElfError {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Elf64Header {
+    pub e_type: u16,
     pub e_entry: u64,
     pub e_phoff: u64,
     pub e_phnum: u16,
@@ -83,11 +84,6 @@ impl Elf64ProgramHeader {
         let end = start.checked_add(self.p_filesz as usize).ok_or(ElfError::SegmentOutOfBounds { vaddr: self.p_vaddr })?;
 
         return elf_data.get(start..end).ok_or(ElfError::SegmentOutOfBounds { vaddr: self.p_vaddr });
-    }
-
-    #[inline]
-    pub fn bss_size(&self) -> u64 {
-        return self.p_memsz.saturating_sub(self.p_filesz);
     }
 }
 
@@ -156,7 +152,7 @@ impl Elf64Header {
             return Err(ElfError::ProgramHeaderTableOutOfBounds);
         }
 
-        return Ok(Self { e_entry, e_phoff, e_phnum });
+        return Ok(Self { e_type, e_entry, e_phoff, e_phnum });
     }
 
     pub fn program_headers<'a>(&self, data: &'a [u8]) -> impl Iterator<Item = Elf64ProgramHeader> + 'a {
