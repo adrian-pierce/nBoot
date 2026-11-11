@@ -9,7 +9,6 @@ use crate::elf;
 #[repr(C)]
 pub struct BootInfo {
     magic: u32,
-    version: u32,
     fb_addr: u64,
     fb_width: u32,
     fb_height: u32,
@@ -278,7 +277,6 @@ pub fn jump_to_kernel(entry: u64) -> ! {
     unsafe {
         boot_info_ptr.write(BootInfo {
             magic: 0x4E455054,
-            version: 1,
 
             fb_addr,
             fb_width: width as u32,
