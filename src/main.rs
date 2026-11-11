@@ -15,7 +15,6 @@ const KERNEL_PATH: &str = "neptune-Lovelace-0.1.0.elf";
 fn main() -> Status {
     enable_sse();
     uefi::helpers::init().unwrap();
-    uefi::println!("[nBoot INFO]: Bootloader started...");
 
     let (kernel_data, header) = elf::load_kernel_elf(KERNEL_PATH);
     let entry = kernel::load_segments(&kernel_data, &header);
