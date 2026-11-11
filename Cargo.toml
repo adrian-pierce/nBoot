@@ -1,0 +1,20 @@
+[package]
+name = "nBoot"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+uefi = { version = "0.41.0", features = ["alloc", "global_allocator"] }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[[bin]]
+name = "nBoot"
+path = "src/main.rs"
+test = false
+bench = false
+doc = false
